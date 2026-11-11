@@ -1,0 +1,376 @@
+/* ========== Theme ========== */
+:root {
+  --bg: #f2f2f7;
+  --card: #ffffff;
+  --field: #f6f6f9;
+  --line: #e3e3ea;
+  --text: #1c1c1e;
+  --muted: #8e8e93;
+  --accent: #0a84ff;
+  --dark: #111111;
+  --radius: 28px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000000;
+    --card: #1c1c1e;
+    --field: #2c2c2e;
+    --line: #3a3a3c;
+    --text: #f2f2f7;
+    --muted: #8e8e93;
+    --dark: #f2f2f7;
+    color-scheme: dark;
+  }
+}
+
+/* ========== Base ========== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: "Vazirmatn", system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(900px 500px at 10% -10%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%),
+    radial-gradient(700px 500px at 110% 10%, color-mix(in srgb, #bf5af2 12%, transparent), transparent 60%),
+    var(--bg);
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ========== Top bar / Search ========== */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: calc(env(safe-area-inset-top) + 14px) 16px 14px;
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+}
+
+.search {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.search input {
+  width: 100%;
+  height: 48px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* ========== Layout ========== */
+main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 18px 16px calc(env(safe-area-inset-bottom) + 48px);
+}
+
+.grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 1fr;
+}
+
+/* تبلت */
+@media (min-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* دسکتاپ: 4 تا کنار هم */
+@media (min-width: 960px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ========== Card ========== */
+.card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding-bottom: 14px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 10px 30px rgba(0, 0, 0, 0.06);
+  animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+
+  /* native feel: بدون انتخاب متن با نگه‌داشتن */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.card * {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  transition: transform 0.3s;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ----- Photo (collapsible) ----- */
+.photo-wrap {
+  height: 0;
+  overflow: hidden;
+  border-radius: var(--radius) var(--radius) 0 0;
+  transition: height 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.card.open .photo-wrap {
+  height: 240px;
+}
+
+.photo {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 18%, var(--field)),
+    var(--field)
+  );
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* ----- Toggle button (روی لبه‌ی عکس) ----- */
+.toggle {
+  position: relative;
+  z-index: 2;
+  display: block;
+  margin: 14px auto 0;
+  padding: 8px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--dark);
+  color: var(--card);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  transition: transform 0.15s, margin-top 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.card.open .toggle {
+  margin-top: -16px;
+}
+
+.toggle:active {
+  transform: scale(0.95);
+}
+
+/* ----- Info ----- */
+.info {
+  padding: 16px 14px 0;
+  display: grid;
+  gap: 10px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  min-height: 52px;
+  padding: 0 8px 0 14px;
+  border-radius: 18px;
+  background: var(--field);
+  border: 1px solid var(--line);
+  min-width: 0;
+}
+
+.row .field {
+  padding-inline: 8px 6px;
+}
+
+.value {
+  flex: 1;
+  min-width: 0;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.95rem;
+  unicode-bidi: isolate;
+}
+
+.placeholder {
+  color: var(--muted);
+}
+
+/* ----- Copy button ----- */
+.copy {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  transition: transform 0.12s, color 0.2s, border-color 0.2s;
+}
+
+.copy svg {
+  width: 25px;
+  height: 25px;
+  display: block;
+  pointer-events: none;
+}
+
+.copy:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.copy:active {
+  transform: scale(0.88);
+}
+
+.copy:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.copy:disabled:hover {
+  color: var(--text);
+  border-color: var(--line);
+}
+
+/* ========== Empty / Toast ========== */
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 60px 0;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom) + 28px);
+  transform: translate(-50%, 20px);
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--dark);
+  color: var(--card);
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: 100;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ستون شماره‌ها: هر شماره زیر شماره‌ی قبلی */
+.phone-col {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* متن شماره و آیدی: چپ‌چین و LTR */
+.value-ltr {
+  direction: ltr;
+  text-align: left;
+}
+
+/* نام وسط‌چین */
+.name-value {
+  text-align: center;
+}
+
+/* شماره‌ها: تعداد ستون = تعداد شماره‌ها */
+.phone-grid {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* آیدی زیر شماره‌ها و تمام عرض */
+.id-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* ========== Reduced motion ========== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
